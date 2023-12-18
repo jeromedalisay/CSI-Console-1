@@ -57,7 +57,7 @@ namespace CSI.Application.Services
             using (var scope = _serviceProvider.CreateScope())
             {
                 var analyticsService = scope.ServiceProvider.GetRequiredService<IAnalyticsService>();
-                DateTime prevDate = new DateTime(2023, 12, 15);
+                DateTime prevDate = DateTime.Today.AddDays(-1);
                 var salesParam = new AnalyticsParamsDto()
                 {
                     dates = new List<DateTime> { prevDate, prevDate },
