@@ -9,9 +9,9 @@ namespace CSI.Domain.Entities
     public class Analytics
     {
         public int Id { get; set; }
-        public string CustomerId { get; set; } = string.Empty;
-        public int LocationId { get; set; }
-        public DateTime TransactionDate { get; set; }
+        public string? CustomerId { get; set; } = string.Empty;
+        public int? LocationId { get; set; }
+        public DateTime? TransactionDate { get; set; }
         public string MembershipNo { get; set; } = string.Empty;
         public string CashierNo { get; set; } = string.Empty;
         public string RegisterNo { get; set; } = string.Empty;

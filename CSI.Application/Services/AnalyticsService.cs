@@ -13,6 +13,7 @@ using CSI.Application.Interfaces;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Serilog;
 using Microsoft.Data.SqlClient;
+using EFCore.BulkExtensions;
 
 namespace CSI.Application.Services
 {
@@ -31,6 +32,7 @@ namespace CSI.Application.Services
         public async Task SalesAnalytics(AnalyticsParamsDto analyticsParam)
         {
             var listResultOne = new List<Analytics>();
+            var date = new DateTime();
             string strFrom = analyticsParam.dates[0].ToString("yyMMdd");
             string strTo = analyticsParam.dates[1].ToString("yyMMdd");
             string strStamp = $"{DateTime.Now.ToString("yyMMdd")}{DateTime.Now.ToString("HHmmss")}{DateTime.Now.Millisecond.ToString()}";
@@ -140,6 +142,30 @@ namespace CSI.Application.Services
                                       $"INNER JOIN ANALYTICS_TBLSTR{strStamp} E ON E.STRNUM = C.CSSTOR  " +
                                   $"GROUP BY C.CSSTOR,  C.CSDATE,  B.CSTDOC,  A.CSCUST,  C.CSREG,  C.CSTRAN,  B.CSCARD,  B.CSTIL,  A.CSTAMT   " +
                                   $"ORDER BY C.CSSTOR, C.CSDATE, C.CSREG ");
+
+                Log.Information("Formatting Merchant Code...");
+                foreach (var store in analyticsParam.storeId)
+                {
+                    foreach (var code in analyticsParam.memCode)
+                    {
+                        if (analyticsParam.dates != null && analyticsParam.dates.Any() && analyticsParam.dates[0] != null)
+                        {
+                            var transactionDate = analyticsParam.dates[0].Date; 
+
+                            string sqlUpdate = @"
+                                UPDATE tbl_analytics
+                                SET CustomerId = @code
+                                WHERE CustomerId LIKE CONCAT('%', @code, '%')
+                                AND TransactionDate = @transactionDate
+                                AND LocationId = @store";
+
+                            await _dbContext.Database.ExecuteSqlRawAsync(sqlUpdate,
+                                new SqlParameter("@code", code),
+                                new SqlParameter("@transactionDate", transactionDate),
+                                new SqlParameter("@store", store));
+                        }
+                    }
+                }
 
                 Log.Information("Dropping Tables....");
                 await DropTables(strStamp);
