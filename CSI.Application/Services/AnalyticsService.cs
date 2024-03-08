@@ -148,6 +148,7 @@ namespace CSI.Application.Services
                 {
                     foreach (var code in analyticsParam.memCode)
                     {
+                        string formattedMemCode = code.Substring(Math.Max(0, code.Length - 6));
                         if (analyticsParam.dates != null && analyticsParam.dates.Any() && analyticsParam.dates[0] != null)
                         {
                             var transactionDate = analyticsParam.dates[0].Date; 
@@ -155,12 +156,13 @@ namespace CSI.Application.Services
                             string sqlUpdate = @"
                                 UPDATE tbl_analytics
                                 SET CustomerId = @code
-                                WHERE CustomerId LIKE CONCAT('%', @code, '%')
+                                WHERE CustomerId LIKE CONCAT('%', @formattedMemCode, '%')
                                 AND TransactionDate = @transactionDate
                                 AND LocationId = @store";
 
                             await _dbContext.Database.ExecuteSqlRawAsync(sqlUpdate,
                                 new SqlParameter("@code", code),
+                                new SqlParameter("@formattedMemCode", formattedMemCode),
                                 new SqlParameter("@transactionDate", transactionDate),
                                 new SqlParameter("@store", store));
                         }
