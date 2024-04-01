@@ -62,7 +62,7 @@ namespace CSI.Application.Services
                 {
                     dates = new List<DateTime> { prevDate, prevDate },
                     memCode = new List<string> {"9999011855", "9999011931", "9999011955", "9999011915", "9999011914", "9999011926", "9999011838", "9999011929", "9999011935", "9999011860"},
-                    storeId = new List<int> { 201, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227 },
+                    storeId = new List<int> { 201, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 227, 228, 226, 229, 230, 231, 232 },
                 };
                 Log.Information("Adding parameters: {0}", salesParam);
                 Log.Information("Param Dates: {0}", salesParam.dates.ToList());
