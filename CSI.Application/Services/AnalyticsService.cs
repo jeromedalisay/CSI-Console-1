@@ -40,7 +40,10 @@ namespace CSI.Application.Services
             Log.Information("Fetching Departments");
             var deptCodeList = await GetDepartments();
             var deptCodes = string.Join(", ", deptCodeList);
+            List<string> memCodeLast6Digits = analyticsParam.memCode.Select(code => code.Substring(Math.Max(0, code.Length - 6))).ToList();
+            string cstDocCondition = string.Join(" OR ", memCodeLast6Digits.Select(last6Digits => $"(CSDATE BETWEEN {strFrom} AND {strTo}) AND CSTDOC LIKE ''%{last6Digits}%''"));
             string storeList = $"CSSTOR IN ({string.Join(", ", analyticsParam.storeId.Select(code => $"{code}"))})";
+           
             try
             {
                 Log.Information("Creating ANALYTICS_CSHTND{0} Table", strStamp);
